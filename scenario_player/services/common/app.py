@@ -85,7 +85,7 @@ class ServiceProcess(mp.Process):
                     self.terminate()
         finally:
             if self.is_reachable:
-                # The server still exists.Notify a human about its insubordinantion.
+                # The server still exists. Notify a human about its insubordination.
                 raise ServiceProcessException("Shutdown sequence could not be initialized!")
 
             log.info("SPaaS Server shutdown", shutdown_type=shutdown_type)
