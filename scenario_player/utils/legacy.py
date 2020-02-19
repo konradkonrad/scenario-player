@@ -10,6 +10,7 @@ from datetime import datetime
 from itertools import chain as iter_chain, islice
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple, Union
+from gevent.lock import RLock
 
 import click
 import mirakuru
@@ -116,6 +117,19 @@ class MutuallyExclusiveOption(click.Option):
 
 
 class HTTPExecutor(mirakuru.HTTPExecutor):
+
+    def __init__(self, *args, **kwargs):
+        self.lock = RLock()
+        super(HTTPExecutor, self).__init__(*args, **kwargs)
+
+    def _clear_process(self, *args, **kwargs):
+        with self.lock:
+            return super()._clear_process(*args, **kwargs)
+
+    def check_subprocess(self, *args, **kwargs):
+        with self.lock:
+            return super().check_subprocess(*args, **kwargs)
+
     def start(self, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
         """ Merged copy paste from the inheritance chain with modified stdout/err behaviour """
         if self.pre_start_check():
@@ -223,7 +237,7 @@ def wait_for_txs(
                 status = tx.get("status")
                 if status is not None and status == 0:
                     raise ScenarioTxError(f"Transaction {txhash} failed.")
-                ## we want to add 2 blocks as confirmation
+                # we want to add 2 blocks as confirmation
                 if tx["blockNumber"] + 2 < web3.eth.getBlock("latest")['number']:
                     txhashes.remove(txhash)
             time.sleep(0.1)
