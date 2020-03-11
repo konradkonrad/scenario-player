@@ -93,4 +93,4 @@ def new_transaction():
         )
     )
 
-    return transaction_send_schema.jsonify({"tx_hash": result})
+    return transaction_send_schema.jsonify({"tx_hash": result.transaction_hash})

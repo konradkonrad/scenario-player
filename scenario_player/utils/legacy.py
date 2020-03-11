@@ -331,7 +331,7 @@ def reclaim_eth(account: Account, chain_str: str, data_path: pathlib.Path, min_a
                             value=drain_amount,
                             gas_price=web3.eth.gasPrice,
                         )
-                    )
+                    ).transaction_hash
                 )
     for chain_name, chain_txs in txs.items():
         wait_for_txs(web3s[chain_name], chain_txs, 1000)

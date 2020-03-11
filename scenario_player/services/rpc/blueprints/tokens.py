@@ -193,7 +193,7 @@ def call_contract(action):
             )
         data = token_transact_schema.validate_and_deserialize(request.get_json())
 
-        tx_hash = transact_call(action, data)
+        tx_hash = transact_call(action, data).transaction_hash
 
         dumped = token_transact_schema.dump({"tx_hash": tx_hash})
         return jsonify(dumped)
