@@ -85,6 +85,10 @@ commands:
             pip install bump2version
             pip install flit
             pip install tomlkit
+            wget https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.9.11-6a62fe39.tar.gz
+            tar zxvf geth-linux-amd64-1.9.11-6a62fe39.tar.gz
+            mv geth-linux-amd64-1.9.11-6a62fe39/geth /home/circleci/ci/venv/bin/geth
+            chmod +x /home/circleci/ci/venv/bin/geth
 
   prep_venv:
     description: Restore cache and virtualenv, and install dependencies.

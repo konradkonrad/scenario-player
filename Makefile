@@ -32,7 +32,7 @@ install-dev:
 
 install-raiden-develop:
 	pip uninstall raiden -y
-	pip install git+https://github.com/raiden-network/raiden.git@develop
+	pip install git+https://github.com/konradkonrad/raiden.git@synapse_template
 
 unit-tests:
 	pytest --cov=scenario_player
