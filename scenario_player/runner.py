@@ -84,7 +84,6 @@ class ScenarioRunner:
             gas_price_strategy=self.definition.settings.gas_price_strategy,
         )
 
-        self.definition.settings.chain_id = self.client.chain_id
         self.contract_manager = ContractManager(contracts_precompiled_path())
 
         assert account.address

@@ -223,7 +223,7 @@ def get_udc_and_token(runner) -> Tuple[Optional[Contract], Optional[Contract]]:
 
     udc_address = udc_config.address
     if udc_address is None:
-        assert runner.definition.settings.chain_id
+        assert runner.definition.settings.chain
         contracts = get_contracts_deployment_info(
             chain_id=runner.definition.settings.chain_id, version=RAIDEN_CONTRACT_VERSION
         )
