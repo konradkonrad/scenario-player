@@ -34,6 +34,7 @@ raiden = { git = "https://github.com/raiden-network/raiden.git", branch = "devel
 requests = "^2.24.0"
 structlog = "^21.1.0"
 urwid = "!=2.1.0"
+aiortc-pyav-stub = "^0.1.1"
 
 [tool.poetry.dev-dependencies]
 black = ""
