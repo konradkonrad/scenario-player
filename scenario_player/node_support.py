@@ -194,6 +194,9 @@ class NodeRunner:
 
         # Ensure path instances are converted to strings
         cmd = [str(c) for c in cmd]
+        if "production" in cmd:
+            cmd.pop(cmd.index("--development-environment"))
+            cmd.pop(cmd.index("demo"))
         return cmd
 
     @property
