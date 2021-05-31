@@ -10,7 +10,7 @@
     "pfs_fee": 50000000000000000,
     "ms_reward_with_margin": 5500000000000000000,
     "settlement_timeout_min": 100,
-    "raiden_client": "/home/konrad/.local/bin/raiden-v2.0.0rc0-linux-x86_64",
+    "raiden_client": "/home/konrad/.local/bin/raiden-v2.0.0rc2-linux-x86_64",
     "wait_short": 30,
     "wait_long": 60
 }
