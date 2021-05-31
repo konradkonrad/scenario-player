@@ -25,6 +25,7 @@ from raiden_contracts.contract_manager import (
 from raiden_contracts.utils.type_aliases import TokenAmount
 from requests import HTTPError, Session
 from web3 import HTTPProvider, Web3
+from web3.gas_strategies.time_based import construct_time_based_gas_price_strategy
 
 from raiden.accounts import Account
 from raiden.constants import UINT256_MAX
@@ -33,7 +34,6 @@ from raiden.network.proxies.proxy_manager import ProxyManager
 from raiden.network.proxies.token_network_registry import TokenNetworkRegistry
 from raiden.network.proxies.user_deposit import UserDeposit
 from raiden.network.rpc.client import JSONRPCClient
-from raiden.network.rpc.middleware import faster_gas_price_strategy
 from raiden.settings import DEFAULT_NUMBER_OF_BLOCK_CONFIRMATIONS, RAIDEN_CONTRACT_VERSION
 from raiden.utils.formatting import to_canonical_address
 from raiden.utils.nursery import Janitor
@@ -87,6 +87,10 @@ log = structlog.get_logger(__name__)
 # orchestration account capacity.
 NUMBER_OF_RUNS_BEFORE_OVERFLOW = 2 ** 64
 ORCHESTRATION_MAXIMUM_BALANCE = UINT256_MAX // NUMBER_OF_RUNS_BEFORE_OVERFLOW
+
+reliable_faster_gas_price_strategy = construct_time_based_gas_price_strategy(
+    max_wait_seconds=12, sample_size=10, probability=99
+)
 
 
 def is_udc_enabled(udc_settings: UDCSettingsConfig):
@@ -303,7 +307,7 @@ class ScenarioRunner:
         self.client = JSONRPCClient(
             web3=web3,
             privkey=account.privkey,
-            gas_price_strategy=faster_gas_price_strategy,
+            gas_price_strategy=reliable_faster_gas_price_strategy,
             block_num_confirmations=DEFAULT_NUMBER_OF_BLOCK_CONFIRMATIONS,
         )
 
