@@ -170,8 +170,15 @@ def withdraw_from_udc(
             development_environment=development_environment,
         )
 
-        balance = userdeposit_proxy.get_total_deposit(to_canonical_address(node.address), "latest")
-        log.debug("UDC balance", balance=balance, address=node.address)
+        balance = userdeposit_proxy.get_balance(to_canonical_address(node.address), "latest")
+        total_deposit = userdeposit_proxy.get_total_deposit(
+            to_canonical_address(node.address), "latest"
+        )
+        log.debug(
+            "UDC balance", balance=balance, total_deposit=total_deposit, address=node.address
+        )
+        if balance != total_deposit:
+            balance = min(balance, total_deposit)
         if balance > 0:
             drain_amount = TokenAmount(balance)
             existing_plan = userdeposit_proxy.get_withdraw_plan(
