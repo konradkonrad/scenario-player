@@ -28,6 +28,7 @@ from raiden.messages.abstract import cached_property
 from raiden.network.proxies.custom_token import CustomToken
 from raiden.network.proxies.proxy_manager import ProxyManager
 from raiden.network.proxies.token_network import TokenNetwork
+from raiden.network.proxies.user_deposit import UserDeposit
 from raiden.network.rpc.client import EthTransfer, JSONRPCClient
 from raiden.network.rpc.middleware import faster_gas_price_strategy
 from raiden.settings import (
@@ -145,6 +146,25 @@ def get_reclamation_candidates(
                     )
                 )
     return candidates
+
+
+def udc_balance_candidates(
+    reclamation_candidates: List[ReclamationCandidate], udc_proxy: UserDeposit
+) -> List[ReclamationCandidate]:
+    result: List[ReclamationCandidate] = []
+    token = CustomToken(
+        udc_proxy.client, udc_proxy.token_address("latest"), udc_proxy.contract_manager, "latest"
+    )
+
+    for candidate in reclamation_candidates:
+        balance = udc_proxy.get_balance(to_canonical_address(candidate.address), "latest")
+        token_balance = token.balance_of(to_canonical_address(candidate.address))
+        log.debug(
+            "UDC balance", balance=balance, erc20_balance=token_balance, address=candidate.address
+        )
+        if max(balance, token_balance) > 0:
+            result.append(candidate)
+    return result
 
 
 def withdraw_from_udc(

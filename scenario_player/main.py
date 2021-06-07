@@ -464,8 +464,32 @@ def reclaim_eth(
     web3.eth.setGasPriceStrategy(faster_gas_price_strategy)
 
     if withdraw_from_udc:
+
+        chain_id = scenario_player.utils.reclaim.ChainID(web3.eth.chainId)
+        deploy = scenario_player.utils.reclaim.get_contracts_deployment_info(
+            chain_id,
+            RAIDEN_CONTRACT_VERSION,
+            development_environment=environment.development_environment,
+        )
+        (
+            udc_proxy,
+            _,
+        ) = scenario_player.utils.reclaim.get_udc_and_corresponding_token_from_dependencies(
+            chain_id=chain_id,
+            proxy_manager=scenario_player.utils.reclaim.get_proxy_manager(
+                scenario_player.utils.reclaim.JSONRPCClient(
+                    web3=web3,
+                    privkey=account.privkey,
+                    gas_price_strategy=scenario_player.utils.reclaim.faster_gas_price_strategy,
+                ),
+                deploy,
+            ),
+            development_environment=environment.development_environment,
+        )
+        udc_balance_candidates = scenario_player.utils.reclaim.udc_balance_candidates
+        udc_candidates = udc_balance_candidates(reclamation_candidates, udc_proxy)
         scenario_player.utils.reclaim.withdraw_from_udc(
-            reclamation_candidates=reclamation_candidates,
+            reclamation_candidates=udc_candidates,
             contract_manager=contract_manager,
             web3=web3,
             account=account,
